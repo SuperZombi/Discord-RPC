@@ -98,6 +98,11 @@ Examples can be seen in the repository (`Discord-RPC/examples`) or [here](https:
 
   Return : `True` if rpc successfully connected.
 
+- method `RPC.clear()`<br>
+  Clear activity status.
+
+  Return : nothing.
+
 - method `RPC.disconnect()`<br>
   Disconnecting and closing RPC socket.
 
