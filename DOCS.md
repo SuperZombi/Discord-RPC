@@ -35,20 +35,18 @@ Step-by-step making simple rich presence using Discord-RPC.
 
 3. Make `rpc` variable from `discordrpc.RPC` with your unique [Application ID](#getting-application-id).
    ```py
-   # Change `app_id` to your app id
    rpc = discordrpc.RPC(app_id=1234)
    ```
 
 4. Customizing activity using `rpc.set_activity()`.
    ```py
    rpc.set_activity(
-      name="Simple RPC",
       state="A super simple rpc",
       details="simple RPC"
    )
    ```
 
-5. Creating loop for `rpc` so that it can keep running. (Only required if you only run Discord RPC on this file or current instance.)
+5. Creating loop for `rpc` so that it can keep running.
    ```py
    rpc.run()
    ```
@@ -80,8 +78,8 @@ Parameters:
 Variables:
 - **is_running** *(bool)* — Whether the RPC successfully set an activity.
 - **try_reconnecting** *(bool, default: `True`)* — Whether to attempt reconnecting on disconnect.
-- **User** *(cached_property)* — Returns a `User` object populated after handshake. See [User](#user).
-- **App** *(cached_property)* — Returns an `Application` object fetched from Discord API. Auto-fetched on first access. See [App](#app).
+- **User** *(cached_property)* — Returns a `User` object populated after handshake (see [User](#user)).
+- **App** *(cached_property)* — Returns an `Application` object fetched from Discord API (see [App](#app)).
 
 #### `RPC.set_activity`
 
@@ -93,15 +91,15 @@ Sets or updates the current Rich Presence. Returns `True` on success.
 
 Parameters (all optional unless stated):
 
-- **name** *(str)* — Name of the activity (required by Discord API).
+- **name** *(str)* — Name of the activity. If not provided, Discord uses the application name by default.
 - **details** *(str)* — Upper line of the activity.
 - **state** *(str)* — Lower line of the activity.
 - **act_type** *(Activity, default: `Activity.Playing`)* — See [Activity Types](#activity-types).
-- **status_type** *(StatusDisplay, default: `StatusDisplay.Name`)* — Which field (name/state/details) is considered the status name for some clients.
-- **large_image** *(str)* — Key of an uploaded Rich Presence Asset (application Art Assets) or an external direct URL.
-- **large_text** *(str)* — Tooltip text when hovering the large image.
+- **status_type** *(StatusDisplay, default: `StatusDisplay.Name`)* — Which field is considered the status name for some clients.
+- **large_image** *(str)* — Key of an uploaded Rich Presence Asset, or an external direct URL.
+- **large_text** *(str)* — Tooltip when hovering the large image.
 - **large_url** *(str)* — Optional URL for the large image.
-- **small_image** *(str)* — Key of a small asset or an external direct URL.
+- **small_image** *(str)* — Key of a small asset, or an external direct URL.
 - **small_text** *(str)* — Tooltip for the small image.
 - **small_url** *(str)* — Optional URL for the small image.
 - **state_url**, **details_url** *(str)* — Optional link targets when clicking the text.
@@ -110,13 +108,12 @@ Parameters (all optional unless stated):
 - **party_size** *(list[int, int])* — Current and max size, e.g. `[2, 5]`.
 - **join_secret**, **spectate_secret**, **match_secret** *(str)* — Secrets for join/spectate/match.
 - **buttons** *(list[dict])* — Up to 2 buttons created by [`button()`](#buttons).
-- **clear** *(bool)* — If `True`, clears the activity. Same as `rpc.clear()`.
+- **clear** *(bool)* — If `True`, clears the activity.
 
-Notes and validation:
-- `act_type` **must** be a value of `types.Activity`; otherwise `InvalidActivityType` is raised.
+Notes:
+- `act_type` must be a `types.Activity` member; otherwise `InvalidActivityType` is raised.
 - `Activity.Streaming` and `Activity.Custom` are disabled for Rich Presence updates and will raise `ActivityTypeDisabled`.
-- If Discord is not connected and `try_reconnecting` is `True`, `_setup()` will be called automatically.
-- Images can be an uploaded asset key (from Discord Developer Portal) or an external direct URL. Supports PNG, JPEG, WebP, GIF, and AVIF.
+- Images can be an uploaded asset key or an external direct URL (PNG, JPEG, WebP, GIF, AVIF).
 
 #### `RPC.run()`
 
@@ -127,11 +124,8 @@ def run(update_every: int = 1, ping_every: int = 15): -> None
 Keeps the RPC alive. Not required if another task is running on the same file.
 
 Parameters:
-- **update_every** *(int, default: `1`)* — `time.sleep` every inputed second in the loop.
-- **ping_every** *(int, default: `15`)* — Sends a PING heartbeat every N seconds to keep the socket alive.
-
-Exceptions:
-- `KeyboardInterrupt` will call `RPC.disconnect()`.
+- **update_every** *(int, default: `1`)* — Loop sleep interval.
+- **ping_every** *(int, default: `15`)* — OP_PING heartbeat interval to prevent socket timeout.
 
 #### `RPC.clear()`
 
@@ -147,37 +141,32 @@ Clears the current activity without disconnecting.
 def disconnect(): -> None
 ```
 
-Closes the IPC socket and marks the client as disconnected. If `exit_on_disconnect=True`, the process exits after issuing the close command.
+Closes the IPC socket and marks the client as disconnected.
 
 ---
 
 ### User
 
 ```python
-rpc = discordrpc.RPC(app_id=1234)
 rpc.User  # cached_property, populated after handshake
 ```
 
-A lightweight `User` model populated after a successful handshake.
+A lightweight `User` model.
 
 Attributes:
 - **id** *(int)* — Discord user ID.
-- **username** *(str)* — User's username (e.g., `senophyx`).
-- **name** *(str)* — User's global display name (global_name).
-- **avatar** *(str)* — CDN URL to the user's avatar (supports animated GIF detection).
+- **username** *(str)* — Username.
+- **name** *(str)* — Global display name.
+- **avatar** *(str)* — CDN URL (animated GIF detection supported).
 - **bot** *(bool)* — Whether the user is a bot.
-- **premium_type** *(int)* — Discord Nitro tier. See [Discord docs](https://discord.com/developers/docs/resources/user#user-object-premium-types).
+- **premium_type** *(int)* — Discord Nitro tier.
 
-Example:
+#### Example
 ```py
 import discordrpc
-
 rpc = discordrpc.RPC(app_id=123456789)
-print(rpc.User.id)
 print(rpc.User.name)
 print(f"@{rpc.User.username}")
-print(rpc.User.avatar)
-
 rpc.run()
 ```
 
@@ -186,11 +175,10 @@ rpc.run()
 ### App
 
 ```python
-rpc = discordrpc.RPC(app_id=1234)
-rpc.App  # cached_property, auto-fetched from Discord API on first access
+rpc.App  # cached_property, lazy-loaded from Discord API
 ```
 
-An `Application` model populated from the Discord API. The HTTP request is lazy-loaded, meaning it won't execute until `rpc.App` is accessed for the first time.
+An `Application` model. The HTTP request is lazy-loaded on first access.
 
 Attributes:
 - **id** *(int)* — Application ID.
@@ -206,25 +194,22 @@ Attributes:
 
 ```python
 from discordrpc import button
-
-def button(text: str, url: str): -> dict
+button(text: str, url: str) -> dict
 ```
 
-Creates a Discord-compatible button payload. Discord allows up to **2 buttons** per activity.
+Creates a Discord-compatible button payload (max 2 buttons).
 
 Parameters:
-- **text** *(str)* — Button label (1-32 chars recommended).
+- **text** *(str)* — Button label.
 - **url** *(str)* — Must start with `http://` or `https://`. Raises `InvalidURL` otherwise.
 
-Example:
+#### Example
 ```py
 import discordrpc
 from discordrpc import button
 
-rpc = discordrpc.RPC(app_id=1234567891011)
-
+rpc = discordrpc.RPC(app_id=123456789)
 rpc.set_activity(
-    name="Example RPC with Buttons",
     state="Made by Senophyx",
     details="Discord-RPC",
     buttons=[
@@ -232,7 +217,6 @@ rpc.set_activity(
         button("Discord", "https://discord.gg/qpT2AeYZRN"),
     ]
 )
-
 rpc.run()
 ```
 
@@ -245,65 +229,34 @@ from discordrpc import utils
 ```
 
 ### `utils.timestamp`
-
 ```python
 timestamp -> int
 ```
-
-A variable that returns the current time in epoch timestamp.
+Returns the current time in epoch timestamp.
 
 ### `utils.date_to_timestamp`
-
 ```python
-def date_to_timestamp(date: str): -> int
+def date_to_timestamp(date: str) -> int
 ```
-
-Date to timestamp converter.
-
-Parameters:
-- **date** *(str)* — A date and time string in format `%d/%m/%Y-%H:%M:%S` (day/month/year-hour:minute:second).
-
-Example:
-```python
-date_to_timestamp('14/06/2025-00:00:00')
-```
+Converts `%d/%m/%Y-%H:%M:%S` format to epoch timestamp.
 
 ### `utils.use_local_time`
-
 ```python
-def use_local_time(): -> dict
+def use_local_time() -> dict
 ```
-
-Returns a simplified `ts_start` payload for `RPC.set_activity()` that starts from midnight today.
+Returns a `ts_start` payload starting from midnight today.
 
 ### `utils.progress_bar`
-
 ```python
-def progress_bar(current: int, duration: int): -> dict
+def progress_bar(current: int, duration: int) -> dict
 ```
-
-Returns a `ts_start` and `ts_end` payload for `RPC.set_activity()` based on progress.
-
-Parameters:
-- **current** *(int)* — Current progress value.
-- **duration** *(int)* — Total duration value.
-
-Raises:
-- `ProgressbarError` — If `current` exceeds `duration`.
+Returns `ts_start` and `ts_end` based on progress. Raises `ProgressbarError` if current > duration.
 
 ### `utils.get_app_info`
-
 ```python
-def get_app_info(app_id: int): -> dict
+def get_app_info(app_id: int) -> dict
 ```
-
-Fetch application info standalone without initializing the `RPC` class.
-
-Parameters:
-- **app_id** *(int or str)* — Your Discord Application ID.
-
-Returns:
-- Payload `dict` containing application details directly from Discord API.
+Fetch application info from Discord API without initializing `RPC`.
 
 ---
 
@@ -313,16 +266,12 @@ Returns:
 from discordrpc import Activity
 ```
 
-| Enum | Value | Description |
-|------|-------|-------------|
-| `Activity.Playing` | 0 | Playing a game |
-| `Activity.Streaming` | 1 | Streaming (disabled for RPC) |
-| `Activity.Listening` | 2 | Listening to something |
-| `Activity.Watching` | 3 | Watching something |
-| `Activity.Custom` | 4 | Custom status (disabled for RPC) |
-| `Activity.Competing` | 5 | Competing in something |
-
-> `Streaming` and `Custom` are currently disabled by Discord for Rich Presence updates. Using them will raise `ActivityTypeDisabled`.
+- `Activity.Playing` (0)
+- `Activity.Streaming` (1) — disabled for RPC
+- `Activity.Listening` (2)
+- `Activity.Watching` (3)
+- `Activity.Custom` (4) — disabled for RPC
+- `Activity.Competing` (5)
 
 ---
 
@@ -332,262 +281,63 @@ from discordrpc import Activity
 from discordrpc import StatusDisplay
 ```
 
-| Enum | Value | Description |
-|------|-------|-------------|
-| `StatusDisplay.Name` | 0 | Name field |
-| `StatusDisplay.State` | 1 | State field |
-| `StatusDisplay.Details` | 2 | Details field |
+- `StatusDisplay.Name` (0)
+- `StatusDisplay.State` (1)
+- `StatusDisplay.Details` (2)
 
 ---
 
 ## Exceptions
 
-Module: `exceptions.py` (all extend `RPCException`)
+All exceptions extend `RPCException`.
 
 | Exception | Description |
 |-----------|-------------|
-| `RPCException` | Base exception for all library errors. |
-| `Error(message)` | Generic user error. |
-| `DiscordNotOpened()` | Discord not found or running. |
-| `ActivityError()` | Malformed or invalid activity payload. |
-| `InvalidURL()` | URL did not start with `http://` or `https://`. |
-| `InvalidID()` | Invalid Application ID. |
-| `ButtonError(message)` | Button-related error (e.g., more than 2 buttons). |
-| `ProgressbarError(message)` | Invalid progress values (e.g., current > duration). |
-| `InvalidActivityType(message)` | `act_type` is not a `types.Activity` member. |
-| `ActivityTypeDisabled()` | `Streaming` or `Custom` types are blocked by Discord. |
-
-> Catch `RPCException` if you want to handle all library errors.
-
----
-
-## Examples
-
-### Basic presence
-```python
-import discordrpc
-
-rpc = discordrpc.RPC(app_id=12345678910)
-
-rpc.set_activity(
-    name="Simple RPC",
-    state="A super simple rpc",
-    details="simple RPC"
-)
-
-rpc.run()
-```
-
-### Presence with buttons
-```python
-import discordrpc
-from discordrpc import button
-
-rpc = discordrpc.RPC(app_id=1234567891011)
-
-rpc.set_activity(
-    name="Example RPC with Buttons",
-    state="Made by Senophyx",
-    details="Discord-RPC",
-    buttons=[
-        button("Repository", "https://github.com/Senophyx/discord-rpc"),
-        button("Discord", "https://discord.gg/qpT2AeYZRN"),
-    ]
-)
-
-rpc.run()
-```
-
-### Presence with images
-```python
-import discordrpc
-
-rpc = discordrpc.RPC(app_id=123456789)
-
-rpc.set_activity(
-    name="Discord-RPC Example",
-    state="pip install discord-rpc",
-    details="Discord-RPC by Senophyx",
-    large_image="eternomm_logo",
-    large_text="EterNomm",
-    small_image="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
-    small_text="Github"
-)
-
-rpc.run()
-```
-
-### Presence with timestamps
-```python
-import discordrpc
-from discordrpc.utils import timestamp
-
-rpc = discordrpc.RPC(app_id=123456789)
-
-rpc.set_activity(
-    name="Timestamp Example",
-    state="With timestamp!",
-    details="Timestamp",
-    ts_start=timestamp,
-    ts_end=1752426021
-)
-
-rpc.run()
-```
-
-### Presence with activity type
-```python
-import discordrpc
-from discordrpc import Activity
-import time
-
-rpc = discordrpc.RPC(app_id=123456789)
-
-current_time = int(time.time())
-finish_time = current_time + 200
-
-rpc.set_activity(
-    name="Music Example",
-    state="With activity type",
-    details="Music",
-    act_type=Activity.Listening,
-    ts_start=current_time,
-    ts_end=finish_time
-)
-
-rpc.run()
-```
-
-### Presence with party
-```python
-import discordrpc
-
-rpc = discordrpc.RPC(app_id=123456789)
-
-rpc.set_activity(
-    name="Valorant Party",
-    details="VALORANT",
-    state="Join if you want!",
-    party_id=12345,
-    party_size=[1, 10],
-    join_secret="playvalowithme",
-    spectate_secret="spectateme",
-    match_secret="idkbrofr"
-)
-
-rpc.run()
-```
-
-### Presence with progress bar
-```python
-import discordrpc
-from discordrpc import Activity
-from discordrpc.utils import progress_bar
-
-rpc = discordrpc.RPC(app_id=1234567891011)
-
-rpc.set_activity(
-    name="Music Progressbar",
-    state="With Progressbar",
-    details="Music",
-    act_type=Activity.Listening,
-    **progress_bar(50, 200)
-)
-
-rpc.run()
-```
-
-### Clear activity
-```python
-import discordrpc
-import time
-
-rpc = discordrpc.RPC(app_id=123456789)
-
-rpc.set_activity(
-    name="Example RPC",
-    state="Working hard",
-    details="Coding in Python",
-    large_image="eternomm_logo",
-    large_text="EterNomm"
-)
-
-time.sleep(10)
-
-rpc.clear()
-
-time.sleep(5)
-rpc.disconnect()
-```
-
-### Local time helper
-```python
-import discordrpc
-from discordrpc import use_local_time
-
-rpc = discordrpc.RPC(app_id=123456789)
-
-rpc.set_activity(
-    name="Local Time Example",
-    state="Wow! It's shows my clock",
-    details="Local time example",
-    **use_local_time()
-)
-
-rpc.run()
-```
-
-### Debug mode
-```python
-import discordrpc
-
-rpc = discordrpc.RPC(app_id=123456789, debug=True)
-
-rpc.set_activity(
-    name="Debug RPC",
-    state="A super simple rpc",
-    details="simple RPC"
-)
-
-rpc.run()
-```
-
-More examples can be found [here](https://github.com/Senophyx/Discord-RPC/tree/main/examples).
+| `RPCException` | Base exception |
+| `Error(message)` | Generic user error |
+| `DiscordNotOpened()` | Discord not found/running |
+| `ActivityError()` | Invalid activity payload |
+| `InvalidURL()` | URL not starting with http/https |
+| `InvalidID()` | Invalid Application ID |
+| `ButtonError(message)` | Button limit exceeded |
+| `ProgressbarError(message)` | Invalid progress values |
+| `InvalidActivityType(message)` | act_type not a valid Activity |
+| `ActivityTypeDisabled()` | Streaming/Custom blocked by Discord |
 
 ---
 
 ## Troubleshooting
 
-- **"Discord is closed" / could not find IPC** — Ensure the desktop app is open. On Linux, confirm `$XDG_RUNTIME_DIR` or `/tmp` contains `discord-ipc-*` sockets.
-- **`ActivityTypeDisabled`** — Discord no longer accepts `Streaming` and `Custom` via Rich Presence updates. Use another `Activity` value.
-- **Buttons don't show** — You can only have up to **2** buttons. All URLs must begin with `http://` or `https://`.
-- **No images appear** — Upload assets to the **Art Assets** section of your application and reference their keys, not file paths.
-- **App exits on disconnect** — Set `exit_on_disconnect=False` when creating `RPC` if you prefer to handle disconnects yourself.
-- **Silence logs** — Pass `output=False` to `RPC(...)` to disable log output.
+- **"Discord is closed"** — Ensure desktop app is running. On Linux, check `$XDG_RUNTIME_DIR` / `tmp/discord-ipc-*`.
+- **`ActivityTypeDisabled`** — Use `Playing`, `Listening`, `Watching`, or `Competing` instead.
+- **Buttons don't show** — Max 2 buttons, URLs must start with `http://` or `https://`.
+- **No images appear** — Upload assets to Discord Developer Portal Art Assets section.
+- **App exits on disconnect** — Set `exit_on_disconnect=False`.
+- **Silence logs** — Pass `output=False`.
 
 ---
 
 ## FAQ
 
 **Q: Do I need a bot token?**  
-A: No. This library communicates locally with the Discord client via IPC; only an Application ID is needed.
+A: No. Only an Application ID.
 
-**Q: Can I update the presence from a server?**  
-A: No. This is a client-side integration; the user's Discord app must run on the same machine.
+**Q: Can I update presence from a server?**  
+A: No. This is client-side IPC, Discord must run on the same machine.
 
-**Q: Can I use streaming or custom activity?**  
-A: Those types are disabled for RPC updates and raise `ActivityTypeDisabled`.
+**Q: Can I use Streaming or Custom activity?**  
+A: No, those types are disabled and raise `ActivityTypeDisabled`.
 
 ---
 
 ## Links
-- [GitHub Repository](https://github.com/Senophyx/Discord-RPC)
-- [PyPI Project page](https://pypi.org/project/discord-rpc/)
-- [TestPyPI Project page](https://test.pypi.org/project/discord-rpc/)
-- [Discord Server](https://discord.gg/qpT2AeYZRN)
+- [GitHub](https://github.com/Senophyx/Discord-RPC)
+- [PyPI](https://pypi.org/project/discord-rpc/)
+- [TestPyPI](https://test.pypi.org/project/discord-rpc/)
+- [Discord](https://discord.gg/qpT2AeYZRN)
 
-## Licence & Copyright
+## Licence
 ```
-Discord-RPC project is under MIT License.
-Copyright (c) 2021-2025 Senophyx.
+MIT License
+Copyright (c) 2021-2025 Senophyx
 ```

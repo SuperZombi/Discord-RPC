@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [6.0] - 2026-07-21
 
 ### Added
-- `name` parameter to `RPC.set_activity()` as required by Discord API (PR [#58](https://github.com/Senophyx/Discord-RPC/pull/58) by @SuperZombi)
+- `name` parameter to `RPC.set_activity()` (optional, falls back to Discord application name if not provided) (PR [#58](https://github.com/Senophyx/Discord-RPC/pull/58) by @SuperZombi)
 - `ping_every` parameter to `RPC.run()` for configurable OP_PING heartbeat interval
 - External URL image support for `large_image` and `small_image` (direct HTTP URLs now supported alongside asset keys)
 
@@ -36,10 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Broken button arguments in `print-rpc-output.py` example
 
 ### Documentation
-- Rewrote `DOCS.md` with `name` parameter, `cached_property` refactor, and updated examples
+- Rewrote `DOCS.md` with updated API reference and corrected codebase changes
 - Added `CHANGELOGS.md` with full release history from v2.0
-- Updated `README.md` quick example with `name` parameter
-- Updated all `examples/` files with `name` parameter
 - Added clear activity and all-in-one complex RPC examples
 - Added external URL image support information to docstrings and examples
 
