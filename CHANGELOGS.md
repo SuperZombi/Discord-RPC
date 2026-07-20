@@ -1,0 +1,164 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+---
+
+## [6.0] - 2026-07-21
+
+### Added
+- `name` parameter to `RPC.set_activity()` as required by Discord API (PR [#58](https://github.com/Senophyx/Discord-RPC/pull/58) by @SuperZombi)
+- `ping_every` parameter to `RPC.run()` for configurable OP_PING heartbeat interval
+- External URL image support for `large_image` and `small_image` (direct HTTP URLs now supported alongside asset keys)
+
+### Changed
+- `User` and `App` refactored from instance attributes to `@cached_property` -- lazy-loaded and read-only after first access (PR [#58](https://github.com/Senophyx/Discord-RPC/pull/58) by @SuperZombi)
+- `RPC.get_app_info()` method removed; access application info via `rpc.App` property directly
+- Activity payload building inlined from `_build_activity()` back into `set_activity()` for simplicity
+- Shared pipe connection logic extracted into `_BasePipe` class, eliminating DRY violations between `WindowsPipe` and `UnixPipe`
+- `Button()` function renamed to `button()` for PEP8 compliance
+- `TRY_RECONNECTING` global converted to instance attribute `self.try_reconnecting`
+- Internal logging variables renamed for specificity
+- `urllib.request` and `json` imports in `utils.py` moved to top level
+
+### Fixed
+- Socket timeout prevention: OP_PING heartbeat now sent every 15 seconds by default in `RPC.run()`
+- Log handler duplication across multiple RPC instances
+- `logging.basicConfig()` removed to avoid polluting user's logging configuration
+- Global variable declaration order causing `SyntaxError` on some Python versions
+- Overly broad `except KeyError` in `handshake()` methods
+- `UnixPipe._recv()` data truncation on large payloads
+- `set_activity()` return type annotation corrected from `bool` to `Optional[bool]`
+- `self.connected` now properly set from `_connect_pipe()` return value instead of defaulting to `True`
+- Broken button arguments in `print-rpc-output.py` example
+
+### Documentation
+- Rewrote `DOCS.md` with `name` parameter, `cached_property` refactor, and updated examples
+- Added `CHANGELOGS.md` with full release history from v2.0
+- Updated `README.md` quick example with `name` parameter
+- Updated all `examples/` files with `name` parameter
+- Added clear activity and all-in-one complex RPC examples
+- Added external URL image support information to docstrings and examples
+
+## [5.6] - 2026-06-14
+
+### Added
+- `Application` info fetching via `rpc.get_app_info()` and `utils.get_app_info()` (PR [#57](https://github.com/Senophyx/Discord-RPC/pull/57) by @SuperZombi & @Senophyx)
+- `pyproject.toml` licensing metadata
+
+### Changed
+- Renamed `ProgressBar` to `progress_bar` for consistent naming convention
+- Replaced all-contributors with contrib.rocks for contributor display
+- Cleaned up unused parameter comments across codebase
+- Removed License classifiers in favor of PEP 639 compliant metadata
+- Updated documentation links and styling across the project
+
+### Fixed
+- `importlib.metadata.PackageNotFoundError` when package is not installed (PR [#56](https://github.com/Senophyx/Discord-RPC/pull/56) by @deeffest)
+- Typing and license metadata in `pyproject.toml`
+
+## [5.5] - 2025-10-23
+
+### Added
+- New `ActivityType` class and type system enhancements (PR [#49](https://github.com/Senophyx/Discord-RPC/pull/49) by @SuperZombi)
+- New parameters and types for `set_activity()` (PR [#50](https://github.com/Senophyx/Discord-RPC/pull/50) by @SuperZombi)
+- Additional missing types (PR [#53](https://github.com/Senophyx/Discord-RPC/pull/53) by @jannuary)
+
+### Changed
+- Migrated from `setup.py` to PEP 621 compliant `pyproject.toml` ([0ffaca5](https://github.com/Senophyx/Discord-RPC/commit/0ffaca5bbf941a1435defac789c966a8d7d3ad5c))
+- Button class rewritten with improved implementation
+
+### Fixed
+- Minor issues in activity handling and button functionality
+
+## [5.1] - 2024-09-18
+
+### Added
+- Activity Types support (`Activity.Playing`, `Activity.Listening`, `Activity.Watching`, `Activity.Competing`, etc.)
+- More detailed output information for debugging
+
+## [5.0] - 2024-03-13
+
+### Changed (Breaking)
+- **Inputting Application ID is no longer in `RPC.set_id()`.** Replaced with direct input in the `RPC` class.
+
+  Before:
+  ```py
+  rpc = discordrpc.RPC.set_id(app_id=1234567890)
+  ```
+
+  After:
+  ```py
+  rpc = discordrpc.RPC(app_id=1234567890)
+  ```
+
+### Removed
+- Multiple internal functions removed:
+  - `RPC.set_id`
+  - `RPC._connect`, `RPC._write`, `RPC._recv`, `RPC._recv_exact`
+  - And many more internal methods
+
+### Changed
+- Package `logging` reintroduced for output
+- `timestamp` argument in `set_activity()` replaced with `ts_start` and `ts_end`
+- `timestamp` variable moved to `discordrpc.utils`:
+  ```py
+  from discordrpc.utils import timestamp
+  ```
+- `button` in `discordrpc.button` renamed to `Button`
+- Added `debug` parameter to `RPC` class for verbose logging
+
+### Added
+- `date_to_timestamp()` function in `discordrpc.utils` (format: `%d/%m/%Y-%H:%M:%S`)
+
+## [4.0] - 2023-09-11
+
+### Changed (Breaking)
+- **Package folder renamed from `DiscordRPC` to `discordrpc`.**
+
+  Before:
+  ```py
+  import DiscordRPC
+  ```
+
+  After:
+  ```py
+  import discordrpc
+  ```
+
+### Removed
+- `GCAR` (`get_current_application_running`) - removed because it cannot be cross-platform
+- `setLoggerEnabled()` function
+
+### Changed
+- `Set_ID` renamed to `set_id`
+- `output()` function replaced with `show_output` variable
+- No longer using the `logging` package
+- Code in `presence.py` shortened and simplified
+
+## [3.5] - 2022-05-31
+
+### Added
+- Initial `get_app_info()` function for fetching application details from Discord API
+
+### Fixed
+- Various bug fixes and stability improvements
+
+## [3.0] - 2022-01-22
+
+### Added
+- `GCAR` (Get Current Application Running) method - automatically switches RPC status to the application currently running
+
+## [2.0] - 2021-12-14
+
+### Added
+- Button support (up to 2 buttons per activity)
+- RPC output logging (success and error messages)
+
+### Fixed
+- RPC now runs correctly even when `large_text` and `small_text` are not set
+- Success message now displays properly on RPC set
+- Error appears if RPC is not set correctly

@@ -10,7 +10,7 @@
 
 A Python wrapper for the Discord RPC API that allows you to create your own custom Rich Presence.
 
-[![Changelog](https://img.shields.io/badge/Changelog-blue?style=for-the-badge&logo=github)](https://senophyx.id/projects/discord-rpc/#change-logs)
+[![Changelog](https://img.shields.io/badge/Changelog-blue?style=for-the-badge&logo=github)](CHANGELOGS.md)
 [![Documentation](https://img.shields.io/badge/Documentation-gray?style=for-the-badge&logo=googledocs&logoColor=white)](DOCS.md)
 
 ## Install
