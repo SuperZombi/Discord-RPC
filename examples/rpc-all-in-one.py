@@ -10,6 +10,7 @@ current_time = int(time.time())
 
 # Set a complex activity combining all features: text, images, timestamps, party, and buttons
 rpc.set_activity(
+    name="Epic Boss Fight",
     state="In an Epic Boss Fight",
     details="Level 99 - The Abyss",
     

@@ -5,6 +5,7 @@ rpc = discordrpc.RPC(app_id=123456789)
 
 print("Setting activity...")
 rpc.set_activity(
+    name="Example RPC",
     state="Working hard",
     details="Coding in Python",
     large_image="eternomm_logo",

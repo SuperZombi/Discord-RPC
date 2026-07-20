@@ -3,6 +3,7 @@ import discordrpc
 rpc = discordrpc.RPC(app_id=123456789)
 
 rpc.set_activity(
+    name="Valorant Party",
     details='VALORANT',
     state='Join if you want!',
 

@@ -7,6 +7,7 @@ rpc = discordrpc.RPC(app_id=123456789)
 # Upload assets here: https://discord.com/developers/applications/<APP ID>/rich-presence/assets
 
 rpc.set_activity(
+      name="Discord-RPC Example",
       state="pip install discord-rpc",
       details="Discord-RPC by Senophyx",
       
