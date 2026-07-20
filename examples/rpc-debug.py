@@ -7,6 +7,7 @@ import discordrpc
 rpc = discordrpc.RPC(app_id=123456789, debug=True)
 
 rpc.set_activity(
+      name="Debug RPC",
       state="A super simple rpc",
       details="simple RPC"
     )

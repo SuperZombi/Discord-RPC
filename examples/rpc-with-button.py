@@ -5,6 +5,7 @@ rpc = discordrpc.RPC(app_id=1234567891011)
 
 
 rpc.set_activity(
+      name="Example RPC",
       state="Made by Senophyx",
       details="Discord-RPC",
       buttons=[

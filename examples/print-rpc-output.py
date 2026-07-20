@@ -12,6 +12,7 @@ button_list = [
 ]
 
 rpc.set_activity(
+      name="Example RPC with Buttons",
       state="Made by Senophyx",
       details="Discord-RPC",
       buttons=button_list

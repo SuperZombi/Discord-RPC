@@ -10,6 +10,7 @@ current_time = int(time.time())
 finish_time = current_time + 200
 
 rpc.set_activity(
+      name="Music Example",
       state="With activity type",
       details="Music",
       act_type=Activity.Listening,
