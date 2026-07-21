@@ -2,6 +2,7 @@ import time
 import json
 import urllib.request
 from datetime import datetime
+from zoneinfo import ZoneInfo
 import logging
 from .exceptions import ProgressbarError
 
@@ -30,8 +31,12 @@ def date_to_timestamp(date:str):
         datetime.strptime(date, "%d/%m/%Y-%H:%M:%S").timetuple()
     ))
 
-def use_local_time():
-    now = datetime.now()
+def use_local_time(timezone:str = None):
+    if timezone:
+        now = datetime.now(ZoneInfo(timezone))
+    else:
+        now = datetime.now()
+
     seconds_since_midnight = now.hour * 3600 + now.minute * 60 + now.second
     return {
         "ts_start": int(time.time()) - seconds_since_midnight

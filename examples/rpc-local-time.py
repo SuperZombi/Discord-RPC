@@ -11,4 +11,8 @@ rpc.set_activity(
     **use_local_time()
 )
 
+# rpc.set_activity(
+#     **use_local_time("Europe/Berlin")
+# )
+
 rpc.run()
