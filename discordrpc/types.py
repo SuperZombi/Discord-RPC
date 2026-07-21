@@ -32,8 +32,7 @@ class User():
         else:
             return f"https://cdn.discordapp.com/embed/avatars/0.png"
 
-    def __str__(self):
-        return f"User({self.name})"
+    def __str__(self): return f"User({self.name})"
 
 class Application():
     def __init__(self, data:dict=None):
@@ -50,5 +49,16 @@ class Application():
             return f"https://cdn.discordapp.com/app-icons/{self.id}/{icon_id}.png?size={size}"
         return "https://cdn.discordapp.com/embed/avatars/1.png"
 
-    def __str__(self):
-        return f"Application({self.name})"
+    def __str__(self): return f"Application({self.name})"
+
+class Asset():
+    def __init__(self, app_id:int, data:dict=None, size:int=1024):
+        data = data or {}
+        self.app_id: int = app_id
+        self.id: int = int(data.get("id", 0))
+        self.name: str = data.get("name")
+        self.type: int = int(data.get("type", 0))
+        self.url: str = f"https://cdn.discordapp.com/app-assets/{self.app_id}/{self.id}.png?size={size}"
+
+    def __str__(self): return f"Asset({self.name})"
+    def __repr__(self): return str(self)

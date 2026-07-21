@@ -9,8 +9,8 @@ from .exceptions import (
     RPCException, InvalidID, DiscordNotOpened,
     ButtonError, InvalidActivityType, ActivityTypeDisabled,
 )
-from .types import Activity, StatusDisplay, User, Application
-from .utils import remove_none, get_app_info
+from .types import Activity, StatusDisplay, User, Application, Asset
+from .utils import remove_none, get_app_info, get_assets
 from functools import cached_property
 import logging
 import time
@@ -69,6 +69,10 @@ class RPC:
         if not self._app_info:
             self._app_info = get_app_info(self.app_id)
         return Application(self._app_info)
+
+    @property
+    def assets(self):
+        return list(map(lambda i: Asset(self.app_id, i), get_assets(self.app_id)))
 
     def set_activity(
             self, name: str = None,
