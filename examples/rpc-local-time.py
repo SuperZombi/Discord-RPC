@@ -15,4 +15,7 @@ rpc.set_activity(
 #     **use_local_time("Europe/Berlin")
 # )
 
+# from zoneinfo import available_timezones
+# print(available_timezones())
+
 rpc.run()
