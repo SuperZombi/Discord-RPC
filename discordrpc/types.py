@@ -71,3 +71,7 @@ class AssetManager(list):
         )
     def get(self, name: str) -> Asset:
         return next((asset for asset in self if asset.name == name), None)
+
+    @property
+    def names(self) -> list:
+        return list(map(lambda asset: asset.name, self))
